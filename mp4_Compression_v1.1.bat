@@ -2,10 +2,10 @@
  
 :: mp4 Quality -------------------------------
 set quality=22 
-:: ( quality: 20-26 useful, smaler better quality ) 
+:: ( quality: 20-26 useful, smaller better quality ) 
  
 set GOPSize=50
-:: ( GOPSize: short clips needs smaler value )  
+:: ( GOPSize: short clips needs smaller value )  
  
 set fps=
 :: ( fps: frames per second )  
