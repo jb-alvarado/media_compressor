@@ -41,8 +41,6 @@ echo.
 echo --------------------------------------
 pause
 start "" "http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z"
-%InstallPath%\7za e ffmpeg-latest-win32-static.7z -o%InstallPath% *.exe -r -y
-del ffmpeg-latest-win32-static.7z
 
  
 :checkmp4box
@@ -55,9 +53,6 @@ echo.
 echo --------------------------------------
 pause
 start "" "http://kurtnoise.free.fr/mp4tools/MP4Box-0.4.6-rev2735.zip"
-%InstallPath%\7za e MP4Box-0.4.6-rev2735.zip -o%InstallPath% *.exe -r -y
-del MP4Box-0.4.6-rev2735.zip
-
  
  
 :run
