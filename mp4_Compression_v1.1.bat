@@ -17,13 +17,13 @@ set "InstallPath=C:\cmdTools"
 if exist %InstallPath% GOTO checkffmpeg
 echo --------------------------------------------------------
 echo.
-echo - Bitte Ornder anlegen und Tools hinein Kopieren
+echo - please make folder and copy files
 echo.
-echo - (z.B. C:\cmdTools)
+echo - (e.g. C:\cmdTools)
 echo.
-echo - Pfad bei "InstallPath" in Batch File anpassen
+echo - ckeck path "InstallPath" in Batch File
 echo.
-echo - Tools: ffmpeg.exe(von FFmpeg); mp4box.exe
+echo - Tools: ffmpeg.exe (from FFmpeg); mp4box.exe
 echo.
 echo --------------------------------------------------------
 pause
@@ -34,9 +34,9 @@ if exist %InstallPath%\ffmpeg.exe GOTO checkmp4box
  
 echo --------------------------------------
 echo.
-echo - Bitte Installationspfad pruefen
+echo - please check path and
 echo.
-echo - und FFmpeg installieren (Static Build)
+echo -  install ffmpeg
 echo.
 echo --------------------------------------
 pause
@@ -50,11 +50,11 @@ if exist %InstallPath%\mp4box.exe GOTO run
  
 echo --------------------------------------
 echo.
-echo - Bitte mp4box installieren
+echo - please install mp4box
 echo.
 echo --------------------------------------
 pause
-%InstallPath%\wget http://kurtnoise.free.fr/mp4tools/MP4Box-0.4.6-rev2735.zip
+start "" "http://kurtnoise.free.fr/mp4tools/MP4Box-0.4.6-rev2735.zip"
 %InstallPath%\7za e MP4Box-0.4.6-rev2735.zip -o%InstallPath% *.exe -r -y
 del MP4Box-0.4.6-rev2735.zip
 
