@@ -40,7 +40,7 @@ echo - und FFmpeg installieren (Static Build)
 echo.
 echo --------------------------------------
 pause
-%InstallPath%\wget http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
+start "" "http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z"
 %InstallPath%\7za e ffmpeg-latest-win32-static.7z -o%InstallPath% *.exe -r -y
 del ffmpeg-latest-win32-static.7z
 
