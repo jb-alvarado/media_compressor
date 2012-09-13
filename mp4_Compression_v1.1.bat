@@ -14,7 +14,7 @@ set fps=
 set "InstallPath=C:\cmdTools"
 :: ---------------------------------------------
  
-if exist %InstallPath% GOTO checkavisynth
+if exist %InstallPath% GOTO checkavisynt
 echo --------------------------------------------------------
 echo.
 echo - please make folder and copy files
@@ -26,13 +26,13 @@ echo.
 echo - Tools: ffmpeg.exe (from FFmpeg); mp4box.exe
 echo.
 echo - for openEXR Sequence use devIL.dll Version 1.7.8:
-echo - https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip (copy .dlls to System32 folder)
+echo - https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip
 echo.
 echo --------------------------------------------------------
 pause
 exit
   
-:checkavisynth
+:checkavisynt
 if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkffmpeg
 if exist "%windir%\System32\avisynth.dll" GOTO checkffmpeg
 
@@ -74,6 +74,7 @@ start "" "http://kurtnoise.free.fr/mp4tools/MP4Box-0.4.6-rev2735.zip"
 exit
  
 :run
+
 set "input=%~1"
  
 cd /d "%~dp1" 2>nul
@@ -90,18 +91,15 @@ echo..........converting Video-File.................................
 echo.
 echo................................................................
 echo.
- 
- 
+
 :: Video-File Compression -------------------------------
- 
-echo.
-echo..........................Converting Video File:............................
-echo.
-%InstallPath%\ffmpeg.exe -i %input% -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec libvo_aacenc -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
- 
+
+
+%InstallPath%\ffmpeg.exe -i "%input%" -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec libvo_aacenc -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
 %InstallPath%\mp4box -hint "%~n1_x264.mp4"
  
 GOTO end
+
 :: ---------------------------------------------------
  
 :: Folder Compression -------------------------------
