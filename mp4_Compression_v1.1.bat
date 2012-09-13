@@ -26,7 +26,7 @@ echo.
 echo - Tools: ffmpeg.exe (from FFmpeg); mp4box.exe
 echo.
 echo - for openEXR Sequence use devIL.dll Version 1.7.8:
-echo - https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip
+echo - https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip (copy .dlls to System32 folder)
 echo.
 echo --------------------------------------------------------
 pause
@@ -44,7 +44,7 @@ echo - hit key for download
 echo.
 echo --------------------------------------
 pause
-start "" "http://sourceforge.net/projects/avisynth2/files/"
+start "" "http://sourceforge.net/projects/avisynth2/files/latest/download?source=files"
 exit  
   
 :checkffmpeg
