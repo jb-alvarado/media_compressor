@@ -14,7 +14,7 @@ set fps=
 set "InstallPath=C:\cmdTools"
 :: ---------------------------------------------
  
-if exist %InstallPath% GOTO checkffmpeg
+if exist %InstallPath% GOTO checkavisynth
 echo --------------------------------------------------------
 echo.
 echo - please make folder and copy files
@@ -32,7 +32,7 @@ echo --------------------------------------------------------
 pause
 exit
   
-:check
+:checkavisynth
 if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkffmpeg
 if exist "%windir%\System32\avisynth.dll" GOTO checkffmpeg
 
