@@ -4,11 +4,18 @@
 set quality=22 
 :: ( quality: 20-26 useful, smaller better quality ) 
  
+ 
 set GOPSize=50
 :: ( GOPSize: short clips needs smaller value )  
  
+ 
 set fps=
 :: ( fps: frames per second )  
+
+
+set aacEnc=libfdk_aac
+:: ( use libvo_aacenc when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )  
+ 
  
 :: Install Path ----------------------------
 set "InstallPath=C:\cmdTools"
@@ -107,9 +114,9 @@ echo................................................................
 echo.
 
 :: Video-File Compression -------------------------------
+:: temp Info: maybe extraoptions a useful e.g. -analyzeduration 500000000 etc.
 
-
-%InstallPath%\ffmpeg.exe -i "%input%" -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec libvo_aacenc -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
+%InstallPath%\ffmpeg.exe -i "%input%" -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
 %InstallPath%\mp4box -hint "%~n1_x264.mp4"
  
 GOTO end
