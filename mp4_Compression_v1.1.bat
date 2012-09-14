@@ -25,16 +25,15 @@ echo - ckeck path "InstallPath" in Batch File
 echo.
 echo - Tools: ffmpeg.exe (from FFmpeg); mp4box.exe
 echo.
-echo - for openEXR Sequence use devIL.dll Version 1.7.8:
-echo - https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip
+echo - for openEXR Sequence use avisynt and devIL.dll Version 1.7.8:
 echo.
 echo --------------------------------------------------------
 pause
 exit
   
 :checkavisynth
-if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkffmpeg
-if exist "%windir%\System32\avisynth.dll" GOTO checkffmpeg
+if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkdevIL
+if exist "%windir%\System32\avisynth.dll" GOTO checkdevIL
 
 echo --------------------------------------
 echo.
@@ -45,6 +44,21 @@ echo.
 echo --------------------------------------
 pause
 start "" "http://sourceforge.net/projects/avisynth2/files/latest/download?source=files"
+exit  
+
+:checkdevIL
+if exist "%windir%\SysWOW64\devil.dll" GOTO checkffmpeg
+if exist "%windir%\System32\devil.dll" GOTO checkffmpeg
+
+echo --------------------------------------
+echo.
+echo - please install devIL.dll to SysWOW64 or System32
+echo.
+echo - hit key for download
+echo.
+echo --------------------------------------
+pause
+start "" "https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip"
 exit  
   
 :checkffmpeg
