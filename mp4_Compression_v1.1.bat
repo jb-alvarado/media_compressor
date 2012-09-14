@@ -32,7 +32,7 @@ echo - ckeck path "InstallPath" in Batch File
 echo.
 echo - Tools: ffmpeg.exe (from FFmpeg); mp4box.exe
 echo.
-echo - for openEXR Sequence use avisynt and devIL.dll Version 1.7.8:
+echo - for openEXR Sequence use avisynth and devIL.dll Version 1.7.8:
 echo.
 echo --------------------------------------------------------
 pause
@@ -187,8 +187,7 @@ popd
  
 set "NewFileName=%newname%%%04d%ext%"
  
-%InstallPath%\ffmpeg.exe -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -an -y "%input%\..\%newname%_x264.mp4"
- 
+%InstallPath%\ffmpeg.exe -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -an -y "%input%\..\%newname%_x264.mp4" 
 %InstallPath%\mp4box -hint "%input%\..\%newname%_x264.mp4"
  
 GOTO end
@@ -234,7 +233,6 @@ echo FlipVertical^(^) >> "%input%\..\%~n1_tmp.avs"
 echo Levels^(0,%gamma%,255,0,255^) >> "%input%\..\%~n1_tmp.avs"
 
 %InstallPath%\ffmpeg.exe -i "%input%\..\%~n1_tmp.avs" -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -an -y "%input%\..\%newname%_x264.mp4"
-
 %InstallPath%\mp4box -hint "%input%\..\%newname%_x264.mp4"
 
 if exist "%input%\..\%~n1_tmp.avs" del "%input%\..\%~n1_tmp.avs"
