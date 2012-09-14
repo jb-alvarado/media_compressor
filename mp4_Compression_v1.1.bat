@@ -1,20 +1,20 @@
 @echo off
  
 :: mp4 Quality -------------------------------
-set quality=22 
-:: ( quality: 20-26 useful, smaller better quality ) 
+set quality=22
+:: ( quality: 20-26 useful, smaller better quality )
  
  
 set GOPSize=50
-:: ( GOPSize: short clips needs smaller value )  
+:: ( GOPSize: short clips needs smaller value )
  
  
 set fps=
-:: ( fps: frames per second )  
+:: ( fps: frames per second )
 
 
 set aacEnc=libfdk_aac
-:: ( use libvo_aacenc when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )  
+:: ( use libvo_aacenc when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
  
  
 :: Install Path ----------------------------
@@ -51,7 +51,7 @@ echo.
 echo --------------------------------------
 pause
 start "" "http://sourceforge.net/projects/avisynth2/files/latest/download?source=files"
-exit  
+exit
 
 :checkdevIL
 if exist "%windir%\SysWOW64\devil.dll" GOTO checkffmpeg
@@ -66,7 +66,7 @@ echo.
 echo --------------------------------------
 pause
 start "" "https://sourceforge.net/projects/openil/files/DevIL%20Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip"
-exit  
+exit
   
 :checkffmpeg
 if exist %InstallPath%\ffmpeg.exe GOTO checkmp4box
@@ -75,7 +75,7 @@ echo --------------------------------------
 echo.
 echo - please check path and
 echo.
-echo -  install ffmpeg
+echo - install ffmpeg
 echo.
 echo --------------------------------------
 pause
@@ -115,10 +115,11 @@ echo.
 
 :: Video-File Compression -------------------------------
 :: temp Info: maybe extraoptions a useful e.g. -analyzeduration 500000000 etc.
+for %%f in (%*) do (
+%InstallPath%\ffmpeg.exe -i %%f -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%%~nf_x264.mp4"
+%InstallPath%\mp4box -hint "%%~nf_x264.mp4"
+)
 
-%InstallPath%\ffmpeg.exe -i "%input%" -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
-%InstallPath%\mp4box -hint "%~n1_x264.mp4"
- 
 GOTO end
 
 :: ---------------------------------------------------
@@ -145,9 +146,9 @@ setlocal enabledelayedexpansion
 set number=0
  
 for %%i in (*) do (
-	set /a number=number+1
-	set "file=%%i"
-	)
+set /a number=number+1
+set "file=%%i"
+)
  
 if %number% LSS 251 set GOPSize=50
  
@@ -155,7 +156,7 @@ set ext=%file:~-4%
 call set name=%%file:%ext%=%%
 set newname=%name:~0,-4%
  
-if %ext% == .exr GOTO compEXR 
+if %ext% == .exr GOTO compEXR
  
 set endframe=%name:~-4%
  
@@ -187,7 +188,7 @@ popd
  
 set "NewFileName=%newname%%%04d%ext%"
  
-%InstallPath%\ffmpeg.exe -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -an -y "%input%\..\%newname%_x264.mp4" 
+%InstallPath%\ffmpeg.exe -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -an -y "%input%\..\%newname%_x264.mp4"
 %InstallPath%\mp4box -hint "%input%\..\%newname%_x264.mp4"
  
 GOTO end
@@ -195,7 +196,7 @@ GOTO end
  
 :compEXR
 set /P gamma="Set Gamma Value:"
-:: ( gamma: gamma correction ) 
+:: ( gamma: gamma correction )
 
 set endframe=%name:~-4%
 
