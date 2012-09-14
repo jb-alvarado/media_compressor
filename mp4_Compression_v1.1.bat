@@ -13,7 +13,7 @@ set fps=
 :: ( fps: frames per second )
 
 
-set aacEnc=libfdk_aac
+set aacEnc=libvo_aacenc
 :: ( use libvo_aacenc when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
  
  
