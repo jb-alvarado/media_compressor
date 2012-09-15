@@ -117,16 +117,8 @@ set x1="%input%"
 set x2="%cd%"
  
 if "%input%"=="%CD%" GOTO folder
-echo.
-echo................................................................
-echo.
-echo..........converting Video-File.................................
-echo.
-echo................................................................
-echo.
 
-
-:: Video-File Compression -------------------------------
+:: File Compression -------------------------------
 :: temp Info: maybe extraoptions a useful e.g. -analyzeduration 500000000 etc.
 for %%f in (%*) do (
 
@@ -144,11 +136,29 @@ if "%%~xf"==".dv" GOTO :vidcomp
 if "%%~xf"==".vob" GOTO :vidcomp
 if "%%~xf"==".3gp" GOTO :vidcomp
 
+echo.
+echo................................................................
+echo.
+echo..........converting Audio-File.................................
+echo.
+echo................................................................
+echo.
+
 %InstallPath%\ffmpeg.exe -i %%f -vn -acodec %audioCodec% -ab %audioBit% "%%~nf%audioExt%"
 )
 GOTO end
 
+
 :vidcomp
+
+echo.
+echo................................................................
+echo.
+echo..........converting Video-File.................................
+echo.
+echo................................................................
+echo.
+
 for %%f in (%*) do (
 %InstallPath%\ffmpeg.exe -i %%f -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%%~nf_x264.mp4"
 %InstallPath%\mp4box -hint "%%~nf_x264.mp4"
