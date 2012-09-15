@@ -120,21 +120,24 @@ if "%input%"=="%CD%" GOTO folder
 
 :: File Compression -------------------------------
 :: temp Info: maybe extraoptions a useful e.g. -analyzeduration 500000000 etc.
+
+:audiocomp
+
 for %%f in (%*) do (
 
-if "%%~xf"==".avi" GOTO :vidcomp
-if "%%~xf"==".mp4" GOTO :vidcomp
-if "%%~xf"==".flv" GOTO :vidcomp
-if "%%~xf"==".mov" GOTO :vidcomp
-if "%%~xf"==".mkv" GOTO :vidcomp
-if "%%~xf"==".wmv" GOTO :vidcomp
-if "%%~xf"==".divx" GOTO :vidcomp
-if "%%~xf"==".mpg" GOTO :vidcomp
-if "%%~xf"==".mpeg" GOTO :vidcomp
-if "%%~xf"==".ogv" GOTO :vidcomp
-if "%%~xf"==".dv" GOTO :vidcomp
-if "%%~xf"==".vob" GOTO :vidcomp
-if "%%~xf"==".3gp" GOTO :vidcomp
+if "%%~xf"==".avi" GOTO :videocomp
+if "%%~xf"==".mp4" GOTO :videocomp
+if "%%~xf"==".flv" GOTO :videocomp
+if "%%~xf"==".mov" GOTO :videocomp
+if "%%~xf"==".mkv" GOTO :videocomp
+if "%%~xf"==".wmv" GOTO :videocomp
+if "%%~xf"==".divx" GOTO :videocomp
+if "%%~xf"==".mpg" GOTO :videocomp
+if "%%~xf"==".mpeg" GOTO :videocomp
+if "%%~xf"==".ogv" GOTO :videocomp
+if "%%~xf"==".dv" GOTO :videocomp
+if "%%~xf"==".vob" GOTO :videocomp
+if "%%~xf"==".3gp" GOTO :videocomp
 
 echo.
 echo................................................................
@@ -144,12 +147,12 @@ echo.
 echo................................................................
 echo.
 
-%InstallPath%\ffmpeg.exe -i %%f -vn -acodec %audioCodec% -ab %audioBit% "%%~nf%audioExt%"
+%InstallPath%\ffmpeg.exe -i %%f -vn -acodec %audioCodec% -ab %audioBit% "%%~nf_%audioExt%"
 )
 GOTO end
 
 
-:vidcomp
+:videocomp
 
 echo.
 echo................................................................
@@ -160,6 +163,7 @@ echo................................................................
 echo.
 
 for %%f in (%*) do (
+
 %InstallPath%\ffmpeg.exe -i %%f -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%%~nf_x264.mp4"
 %InstallPath%\mp4box -hint "%%~nf_x264.mp4"
 )
