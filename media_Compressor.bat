@@ -141,6 +141,8 @@ if "%muxingInput%"==".m2v-.ac3" set or_=true
 if "%muxingInput%"==".ac3-.m2v" set or_=true
 if "%muxingInput%"==".m2v-.mp2" set or_=true
 if "%muxingInput%"==".mp2-.m2v" set or_=true
+if "%muxingInput%"==".m2v-.wav" set or_=true
+if "%muxingInput%"==".wav-.m2v" set or_=true
 
 if defined or_ (
 
