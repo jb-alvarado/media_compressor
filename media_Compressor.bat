@@ -141,6 +141,22 @@ if "%muxingInput%"==".m2v-.ac3" set or_=true
 if "%muxingInput%"==".ac3-.m2v" set or_=true
 if "%muxingInput%"==".m2v-.mp2" set or_=true
 if "%muxingInput%"==".mp2-.m2v" set or_=true
+
+if defined or_ (
+
+echo.
+echo................................................................
+echo.
+echo.....multiplex and convert Video/Audio-File....................
+echo.
+echo................................................................
+echo.
+
+%InstallPath%\ffmpeg.exe -i %1 -i %2 -filter:v yadif -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
+%InstallPath%\mp4box -hint "%~n1_x264.mp4"
+GOTO end
+)
+
 if "%muxingInput%"==".avi-.wav" set or_=true
 if "%muxingInput%"==".wav-.avi" set or_=true
 if "%muxingInput%"==".mov-.wav" set or_=true
@@ -160,7 +176,6 @@ if "%muxingInput%"==".mp2-.mpeg" set or_=true
 if "%muxingInput%"==".mpg-.mp2" set or_=true
 if "%muxingInput%"==".mp2-.mpg" set or_=true
 
-
 if defined or_ (
 
 echo.
@@ -171,9 +186,9 @@ echo.
 echo................................................................
 echo.
 
-%InstallPath%\ffmpeg.exe -analyzeduration 5000000 -i %1 -i %2 -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
+%InstallPath%\ffmpeg.exe -i %1 -i %2 -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
 %InstallPath%\mp4box -hint "%~n1_x264.mp4"
-
+GOTO end
 )
 
 
