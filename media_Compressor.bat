@@ -127,6 +127,56 @@ if "%input%"=="%CD%" GOTO folder
 :: File Compression -------------------------------
 :: temp Info: maybe extraoptions a useful e.g. -analyzeduration 500000000 etc.
 
+set /a count=0
+for /f "tokens=* delims= " %%a in ('dir/s/b/a-d %*') do (
+set /a count+=1
+)
+
+if not %count%==2 GOTO :audiocomp
+
+set muxingInput=%~x1-%~x2
+
+set or_=
+if "%muxingInput%"==".m2v-.ac3" set or_=true
+if "%muxingInput%"==".ac3-.m2v" set or_=true
+if "%muxingInput%"==".m2v-.mp2" set or_=true
+if "%muxingInput%"==".mp2-.m2v" set or_=true
+if "%muxingInput%"==".avi-.wav" set or_=true
+if "%muxingInput%"==".wav-.avi" set or_=true
+if "%muxingInput%"==".mov-.wav" set or_=true
+if "%muxingInput%"==".wav-.mov" set or_=true
+if "%muxingInput%"==".avi-.mp3" set or_=true
+if "%muxingInput%"==".mp3-.avi" set or_=true
+if "%muxingInput%"==".mov-.mp3" set or_=true
+if "%muxingInput%"==".mp3-.mov" set or_=true
+if "%muxingInput%"==".mp4-.aac" set or_=true
+if "%muxingInput%"==".aac-.mp4" set or_=true
+if "%muxingInput%"==".mpeg-.ac3" set or_=true
+if "%muxingInput%"==".ac3-.mpeg" set or_=true
+if "%muxingInput%"==".mpg-.ac3" set or_=true
+if "%muxingInput%"==".ac3-.mpg" set or_=true
+if "%muxingInput%"==".mpeg-.mp2" set or_=true
+if "%muxingInput%"==".mp2-.mpeg" set or_=true
+if "%muxingInput%"==".mpg-.mp2" set or_=true
+if "%muxingInput%"==".mp2-.mpg" set or_=true
+
+
+if defined or_ (
+
+echo.
+echo................................................................
+echo.
+echo.....multiplex and convert Video/Audio-File....................
+echo.
+echo................................................................
+echo.
+
+%InstallPath%\ffmpeg.exe -analyzeduration 5000000 -i %1 -i %2 -vcodec libx264 -crf %quality% -preset slow -pix_fmt yuv420p -g %GOPSize% -acodec %aacEnc% -ab 160k -absf aac_adtstoasc -y "%~n1_x264.mp4"
+%InstallPath%\mp4box -hint "%~n1_x264.mp4"
+
+)
+
+
 :audiocomp
 
 for %%f in (%*) do (
@@ -144,6 +194,7 @@ if "%%~xf"==".ogv" GOTO :videocomp
 if "%%~xf"==".dv" GOTO :videocomp
 if "%%~xf"==".vob" GOTO :videocomp
 if "%%~xf"==".3gp" GOTO :videocomp
+if "%%~xf"==".m2v" GOTO :videocomp
 
 echo.
 echo................................................................
@@ -155,6 +206,7 @@ echo.
 
 %InstallPath%\ffmpeg.exe -i %%f -vn -acodec %audioCodec% -ab %audioBit% "%%~nf_%audioExt%"
 )
+
 GOTO end
 
 
