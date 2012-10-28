@@ -25,7 +25,7 @@ set fps=
 
 
 set aacEnc=libfdk_aac
-:: ( use libvo_aacenc when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
+:: ( use "aac -strict experimental" when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
  
 set audioBit=160k
 :: ( Audo Bitrate )  
@@ -38,7 +38,7 @@ set audioExt=.mp3
 :: ( .wav, .mp3, .ac3, mp2, flac, ogg, etc. ) 
 
  
-:: Install Path ----------------------------
+:: Install Path -------------------------------
 set "InstallPath=C:\cmdTools"
 :: ---------------------------------------------
  
