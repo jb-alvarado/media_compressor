@@ -139,7 +139,6 @@ if not %count%==2 GOTO :audiocomp
 
 set muxingInput=%~x1-%~x2
 
-set or_=
 if "%muxingInput%"==".m2v-.ac3" set or_=true
 if "%muxingInput%"==".ac3-.m2v" set or_=true
 if "%muxingInput%"==".m2v-.mp2" set or_=true
@@ -167,19 +166,24 @@ if "%muxingInput%"==".mp2-.mpg" set or_=true
 
 if not %or_%==true GOTO audiocomp
 
-if "%~x1"==".avi" set "vidInput=%1"
-if "%~x1"==".m2v" set "vidInput=%1"
-if "%~x1"==".mov" set "vidInput=%1"
-if "%~x1"==".mp4" set "vidInput=%1"
-if "%~x1"==".mpg" set "vidInput=%1"
-if "%~x1"==".mpeg" set "vidInput=%1"
+if "%~x1"==".avi" GOTO audfirst
+if "%~x1"==".m2v" GOTO audfirst
+if "%~x1"==".mov" GOTO audfirst
+if "%~x1"==".mp4" GOTO audfirst
+if "%~x1"==".mpg" GOTO audfirst
+if "%~x1"==".mpeg" GOTO audfirst
 
+set "vidInput=%1"
 set "audInput=%2"
+
+:audfirst
+set "audInput=%1"
+set "vidInput=%2"
 
 FOR /F %%i in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %vidInput%' ) do set ScanType=%%i
 FOR /F %%j in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%DisplayAspectRatio/String%%^" %vidInput%' ) do set aspect=%%j
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width%%^" %vidInput%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height%%^" %vidInput%' ) do set Height=%%l
+FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width/String%%^" %vidInput%' ) do set Width=%%k
+FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height/String%%^" %vidInput%' ) do set Height=%%l
 FOR /F %%m in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %vidInput%' ) do set Duration=%%m
 
 if %Width% LEQ 1024 (
@@ -215,9 +219,14 @@ echo....................................................................
 echo....................................................................
 echo.
 
+if exist "%~n1.avs" del "%~n1.avs" 
+if exist "%~n1.h264" del "%~n1.h264" 
+if exist "%~n1.aac" del "%~n1.aac" 
+if exist "%1.ffindex" del "%1.ffindex" 
+if exist "%2.ffindex" del "%2.ffindex" 
+
 if not %ScanType%==Progressive (
 
-if exist "%~n1.avs" del "%~n1.avs"  
 echo.SetMTMode^(5, 4^) >> "%~n1.avs"
 echo.LoadPlugin("C:\Program Files (x86)\AviSynth 2.5\plugins\ffms2.dll"^) >> "%~n1.avs"
 echo.Import^("C:\Program Files (x86)\AviSynth 2.5\plugins\QTGMC-3.32.avsi"^) >> "%~n1.avs"
@@ -230,19 +239,24 @@ echo.QTGMC^( Preset="Slow", EdiThreads=2 ^) >> "%~n1.avs"
 echo.SelectEven^(^) >> "%~n1.avs"
 
 %InstallPath%\ffmpeg.exe -y -i "%~n1.avs" -aspect %Aspect% -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%~n1.h264" -c:a %aacEnc% -ab %audioBit% "%~n1.aac"
+
+if exist "%~n1_x264.mp4" del "%~n1_x264.mp4" 
 %InstallPath%\mp4box -add "%~n1.h264" -add "%~n1.aac" -hint -brand mp42 "%~n1_x264.mp4"
-del "%~n1.h264" 
-del "%~n1.aac" 
-del "*.ffindex" 
-del "%~n1.avs" 
+if exist "%~n1.avs" del "%~n1.avs" 
+if exist "%~n1.h264" del "%~n1.h264" 
+if exist "%~n1.aac" del "%~n1.aac" 
+if exist "%1.ffindex" del "%1.ffindex" 
+if exist "%2.ffindex" del "%2.ffindex" 
 
 GOTO end
 ) 
 
 %InstallPath%\ffmpeg.exe -i %vidInput% -i %audInput% -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%~n1.h264" -c:a %aacEnc% -ab %audioBit% "%~n1.aac"
+
+if exist "%~n1_x264.mp4" del "%~n1_x264.mp4"
 %InstallPath%\mp4box -add "%~n1.h264" -add "%~n1.aac" -hint -brand mp42 "%~n1_x264.mp4"
-del "%~n1.h264" 
-del "%~n1.aac" 
+if exist "%~n1.h264" del "%~n1.h264" 
+if exist "%~n1.aac" del "%~n1.aac" 
 
 GOTO end
 )
@@ -278,7 +292,7 @@ if "%%~xf"==".m2v" GOTO :videocomp
 echo.
 echo....................................................................
 echo.
-echo..........converting Audio-File....................................
+echo..........converting Audio-File.....................................
 echo.
 echo....................................................................
 echo.
@@ -296,8 +310,8 @@ for %%f in (%*) do (
 
 FOR /F %%i in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %%f' ) do set ScanType=%%i
 FOR /F %%j in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%DisplayAspectRatio/String%%^" %%f' ) do set aspect=%%j
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width%%^" %%f' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height%%^" %%f' ) do set Height=%%l
+FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width/String%%^" %%f' ) do set Width=%%k
+FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height/String%%^" %%f' ) do set Height=%%l
 FOR /F %%m in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %%f' ) do set Duration=%%m
 FOR /F %%n in ( '%InstallPath%\mediainfo --Inform^=^"Audio^;%%StreamCount%%^" %%f' ) do set AudioStream=%%n
 
@@ -321,7 +335,7 @@ set bufsize=20M
 
 echo.
 echo....................................................................
-echo..........converting Video-File....................................
+echo..........converting Video-File.....................................
 echo....................................................................
 echo.
 echo.Duration:  !Duration!
@@ -337,6 +351,7 @@ echo.
 if exist "%%~nf.h264" del "%%~nf.h264" 
 if exist "%%~nf.aac" del "%%~nf.aac" 
 if exist "%%~nf.avs" del "%%~nf.avs"  
+if exist "%%f.ffindex"  del "%%f.ffindex"  
 
 if "!AudioStream!"=="" (
 
@@ -352,6 +367,8 @@ echo.QTGMC^( Preset="Slow", EdiThreads=2 ^) >> "%%~nf.avs"
 echo.SelectEven^(^) >> "%%~nf.avs"
 
 %InstallPath%\ffmpeg.exe -y -i "%%~nf.avs" -aspect !Aspect! -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264"
+
+if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
 %InstallPath%\mp4box -add "%%~nf.h264" -hint -brand mp42 "%%~nf_x264.mp4"
 del "%%~nf.h264" 
 del "%%f.ffindex" 
@@ -360,6 +377,8 @@ del "%%~nf.avs"
 ) else (
 
 %InstallPath%\ffmpeg.exe -i %%f -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264"
+
+if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
 %InstallPath%\mp4box -add "%%~nf.h264" -hint -brand mp42 "%%~nf_x264.mp4"
 del "%%~nf.h264" 
 )
@@ -380,6 +399,8 @@ echo.QTGMC^( Preset="Slow", EdiThreads=2 ^) >> "%%~nf.avs"
 echo.SelectEven^(^) >> "%%~nf.avs"
 
 %InstallPath%\ffmpeg.exe -y -i "%%~nf.avs" -aspect !Aspect! -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264" -c:a %aacEnc% -ab %audioBit% "%%~nf.aac"
+
+if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
 %InstallPath%\mp4box -add "%%~nf.h264" -add "%%~nf.aac" -hint -brand mp42 "%%~nf_x264.mp4"
 del "%%~nf.h264" 
 del "%%~nf.aac" 
@@ -389,6 +410,8 @@ del "%%~nf.avs"
 ) else (
 
 %InstallPath%\ffmpeg.exe -i %%f -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264" -c:a %aacEnc% -ab %audioBit% "%%~nf.aac"
+
+if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
 %InstallPath%\mp4box -add "%%~nf.h264" -add "%%~nf.aac" -hint -brand mp42 "%%~nf_x264.mp4"
 del "%%~nf.h264" 
 del "%%~nf.aac" 
@@ -459,8 +482,8 @@ popd
  
 set "NewFileName=%newname%%%04d%ext%"
  
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width/String%%^" %file%' ) do set Width=%%k
+FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height/String%%^" %file%' ) do set Height=%%l
 
 if %Width% LEQ 1024 (
 set level=3.2
@@ -494,6 +517,8 @@ echo....................................................................
 echo.
 
 %InstallPath%\ffmpeg.exe -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%input%\..\%newname%.h264"
+
+if exist "%input%\..\%newname%_x264.mp4" del "%input%\..\%newname%_x264.mp4"
 %InstallPath%\mp4box -add "%input%\..\%newname%.h264" -hint -brand mp42 "%input%\..\%newname%_x264.mp4"
 del "%input%\..\%newname%.h264"
 
@@ -533,8 +558,8 @@ popd
 
 set "var=%newname%%%04d%ext%"
 
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width/String%%^" %file%' ) do set Width=%%k
+FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height/String%%^" %file%' ) do set Height=%%l
 
 if %Width% LEQ 1024 (
 set level=3.2
@@ -573,6 +598,8 @@ echo ImageReader^( "%input%\%var%", start=%startframe%, end=%endframe%, fps=%fps
 echo Levels^(0,%gamma%,255,0,255^) >> "%input%\..\%~n1_tmp.avs"
 
 %InstallPath%\ffmpeg.exe -i "%input%\..\%~n1_tmp.avs" -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%input%\..\%newname%.h264"
+
+if exist "%input%\..\%newname%_x264.mp4" del "%input%\..\%newname%_x264.mp4"
 %InstallPath%\mp4box -add "%input%\..\%newname%.h264" -hint -brand mp42 "%input%\..\%newname%_x264.mp4"
 del "%input%\..\%newname%.h264"
 
