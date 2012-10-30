@@ -68,14 +68,14 @@ echo -------------------------------------------------------------
 echo.
 echo - please download and copy wget.exe to:
 echo - %InstallPath% 
-echo - and try again
 echo.
 echo - hit key for download
 echo.
 echo -------------------------------------------------------------
 pause
 start "" "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
-exit
+pause
+if not exist "%InstallPath%\wget.exe" GOTO checkwget
 
 :check7z
 if exist "%InstallPath%\7z.exe" GOTO checkavisynth
@@ -245,6 +245,24 @@ del "%InstallPath%\setlink.vbs"
 :checkself
 if exist "%InstallPath%\media_Compressor.bat" GOTO runscript
 copy /Y "%~f0" "%InstallPath%"
+
+
+if exist "%InstallPath%\Uninstall.bat" GOTO runscript
+echo.@echo off >> "%InstallPath%\Uninstall.bat"
+echo.echo ------------------------------------------------------------- >> "%InstallPath%\Uninstall.bat"
+echo.echo. >> "%InstallPath%\Uninstall.bat"
+echo.echo - Avisynth will not be Uninstall >> "%InstallPath%\Uninstall.bat"
+echo.echo - pleas Uninstall it over your Systemsettings >> "%InstallPath%\Uninstall.bat"
+echo.echo. >> "%InstallPath%\Uninstall.bat"
+echo.echo - hit key to process the Uninstaller >> "%InstallPath%\Uninstall.bat"
+echo.echo ------------------------------------------------------------- >> "%InstallPath%\Uninstall.bat"
+echo pause >> "%InstallPath%\Uninstall.bat"
+
+echo. >> "%InstallPath%\Uninstall.bat"
+echo.del "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk" >> "%InstallPath%\Uninstall.bat"
+echo.pushd ..\ >> "%InstallPath%\Uninstall.bat"
+echo.rmdir /s /q "%InstallPath%" >> "%InstallPath%\Uninstall.bat"
+echo. >> "%InstallPath%\Uninstall.bat"
 
 echo -------------------------------------------------------------
 echo.
