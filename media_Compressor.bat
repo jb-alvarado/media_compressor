@@ -43,10 +43,21 @@ set audioExt=.mp3
 ::------------------------------------------------------------------------------
 :: Install Process
 ::------------------------------------------------------------------------------
-set "InstallPath=C:\BatchTools"
+if exist "C:\Program Files (x86)" (
+
+set "InstallPath=C:\Program Files (x86)\BatchMediaCompressor"
 set "AVSPluginFolder=C:\Program Files (x86)\AviSynth 2.5\plugins"
-if exist "%InstallPath%" GOTO checkwget
-MD "%InstallPath%"
+if exist "!InstallPath!" GOTO checkwget
+MD "!InstallPath!"
+
+) else (
+
+set "InstallPath=C:\Program Files\BatchMediaCompressor"
+set "AVSPluginFolder=C:\Program Files\AviSynth 2.5\plugins"
+if exist "!InstallPath!" GOTO checkwget
+MD "!InstallPath!"
+
+)
 
 
   
@@ -324,11 +335,13 @@ set "vidInput=%~s1"
 set "audInput=%~s2"
 
 :multiplex
-FOR /F %%i in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %vidInput%' ) do set ScanType=%%i
-FOR /F %%j in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %vidInput%' ) do set aspect=%%j
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width/String%%^" %vidInput%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height/String%%^" %vidInput%' ) do set Height=%%l
-FOR /F %%m in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %vidInput%' ) do set Duration=%%m
+pushd "%installpath%"
+FOR /F %%i in ( 'mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %vidInput%' ) do set ScanType=%%i
+FOR /F %%j in ( 'mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %vidInput%' ) do set aspect=%%j
+FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width/String%%^" %vidInput%' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height/String%%^" %vidInput%' ) do set Height=%%l
+FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %vidInput%' ) do set Duration=%%m
+popd
 
 if %Width% LEQ 1024 (
 set level=3.2
@@ -451,12 +464,14 @@ GOTO end
 :videocomp
 
 for %%f in (%*) do (
-FOR /F %%i in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %%f' ) do set ScanType=%%i
-FOR /F %%j in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %%f' ) do set aspect=%%j
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Width/String%%^" %%f' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Height/String%%^" %%f' ) do set Height=%%l
-FOR /F %%m in ( '%InstallPath%\mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %%f' ) do set Duration=%%m
-FOR /F %%n in ( '%InstallPath%\mediainfo --Inform^=^"Audio^;%%StreamCount%%^" %%f' ) do set AudioStream=%%n
+pushd "%installpath%"
+FOR /F %%i in ( 'mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %%f' ) do set ScanType=%%i
+FOR /F %%j in ( 'mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %%f' ) do set aspect=%%j
+FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width/String%%^" %%f' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height/String%%^" %%f' ) do set Height=%%l
+FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %%f' ) do set Duration=%%m
+FOR /F %%n in ( 'mediainfo --Inform^=^"Audio^;%%StreamCount%%^" %%f' ) do set AudioStream=%%n
+popd
 
 set "infile=%%~sf"
 
@@ -626,9 +641,11 @@ popd
  
  
 set "NewFileName=%newname%%%04d%ext%"
- 
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+
+pushd "%installpath%" 
+FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+popd
 
 if %Width% LEQ 1024 (
 set level=3.2
@@ -703,8 +720,10 @@ popd
 
 set "var=%newname%%%04d%ext%"
 
-FOR /F %%k in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( '%InstallPath%\mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+pushd "%installpath%"
+FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+popd
 
 if %Width% LEQ 1024 (
 set level=3.2
