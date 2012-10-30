@@ -123,7 +123,7 @@ echo -------------------------------------------------------------
 if exist "%windir%\SysWOW64" "%InstallPath%\7z.exe" e "%InstallPath%\DevIL-EndUser-x86-1.7.8.zip" -o%windir%\SysWOW64 *.dll -r -y
 if not exist "%windir%\SysWOW64" "%InstallPath%\7z.exe" e "%InstallPath%\DevIL-EndUser-x86-1.7.8.zip" -o%windir%\System32 *.dll -r -y
 
-"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/avisynth.7z"
+"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/avisynth.7z"
 if exist "%windir%\SysWOW64" "%InstallPath%\7z.exe" e "%InstallPath%\avisynth.7z" -o"%windir%\SysWOW64" *.dll -r -y
 if not exist "%windir%\SysWOW64" "%InstallPath%\7z.exe" e "%InstallPath%\avisynth.7z" -o"%windir%\System32" *.dll -r -y
 
@@ -228,12 +228,13 @@ echo.
 echo - bulding Link to the SendTo Menu
 echo.
 echo -------------------------------------------------------------
+"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/FFmpeg.ico"
 
 echo.Set Shell = CreateObject^("WScript.Shell"^) >> "%InstallPath%\setlink.vbs"
 echo.Set link = Shell.CreateShortcut^("C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk"^) >> "%InstallPath%\setlink.vbs"
 echo.link.Arguments = "" >> "%InstallPath%\setlink.vbs"
 echo.link.Description = "Compress Video or Audio Files, Framesequences or multiplex Video and Audio Files to MP4" >> "%InstallPath%\setlink.vbs"
-::echo.link.IconLocation = "%InstallPath%\ffmpeg.ico" >> "%InstallPath%\setlink.vbs"
+echo.link.IconLocation = "%InstallPath%\FFmpeg.ico" >> "%InstallPath%\setlink.vbs"
 echo.link.TargetPath = "%InstallPath%\media_Compressor.bat" >> "%InstallPath%\setlink.vbs"
 echo.link.WindowStyle = 1 >> "%InstallPath%\setlink.vbs"
 echo.link.WorkingDirectory = "%InstallPath%" >> "%InstallPath%\setlink.vbs"
