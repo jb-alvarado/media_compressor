@@ -8,7 +8,7 @@ title media_Compressor
 ::
 :: This is version 0.95 from 2012-09-16. Last modification was on 2012-10-29
 :: 2012-10-28 - add HQ Avisynth Deinterlacer, Auto Level for the Codec, maxrate, bufsize and small changes
-:: 2012-10-28 - build a new installer, most things a now automatic
+:: 2012-10-29 - build a new installer, most things a now automatic
 ::
 ::-------------------------------------------------------------------------------------
 
