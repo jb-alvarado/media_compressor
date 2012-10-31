@@ -24,7 +24,7 @@ set GOPSize=50
 :: ( GOPSize: short clips needs smaller value )
  
 set fps=
-:: ( fps: frames per second )
+:: ( fps: frames per second, only need this for other frame rate then 25, by frame sequences )
 
 set aacEnc=aac -strict experimental
 :: ( use "aac -strict experimental" when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
