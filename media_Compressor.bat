@@ -177,7 +177,7 @@ echo - The AVSLoader will be download and install
 echo.
 echo.
 echo -------------------------------------------------------------
-"%InstallPath%\wget" -P "%InstallPath%" "http://ffmpegsource.googlecode.com/files/ffms2-r722.7z"
+"%InstallPath%\wget" -P "%InstallPath%" "https://ffmpegsource.googlecode.com/files/ffms-2.17.7z"
 "%InstallPath%\7z.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\FFMS2.avsi -y
 "%InstallPath%\7z.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\ffms2.dll -y
 "%InstallPath%\7z.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\ffmsindex.exe -y
