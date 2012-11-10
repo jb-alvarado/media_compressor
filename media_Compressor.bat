@@ -447,8 +447,10 @@ if "%%~xf"==".avi" GOTO :videocomp
 if "%%~xf"==".AVI" GOTO :videocomp
 if "%%~xf"==".mp4" GOTO :videocomp
 if "%%~xf"==".MP4" GOTO :videocomp
+if "%%~xf"==".m4v" GOTO :videocomp
 if "%%~xf"==".avs" GOTO :videocomp
 if "%%~xf"==".flv" GOTO :videocomp
+if "%%~xf"==".f4v" GOTO :videocomp
 if "%%~xf"==".mov" GOTO :videocomp
 if "%%~xf"==".MOV" GOTO :videocomp
 if "%%~xf"==".mkv" GOTO :videocomp
@@ -607,6 +609,8 @@ GOTO end
  
 :folder
  
+set "shortpath=%~s1"
+ 
 if not "%fps%" == "" GOTO comp
 set fps=25
  
@@ -662,8 +666,8 @@ popd
 set "NewFileName=%newname%%%04d%ext%"
 
 pushd "%installpath%" 
-FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %shortpath%\%file%' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %shortpath%\%file%' ) do set Height=%%l
 popd
 
 if %Width% LEQ 1024 (
@@ -740,8 +744,8 @@ popd
 set "var=%newname%%%04d%ext%"
 
 pushd "%installpath%"
-FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %file%' ) do set Width=%%k
-FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %file%' ) do set Height=%%l
+FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %shortpath%\%file%' ) do set Width=%%k
+FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %shortpath%\%file%' ) do set Height=%%l
 popd
 
 if %Width% LEQ 1024 (
