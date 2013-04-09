@@ -27,7 +27,7 @@
 :: 2012-10-28 - add HQ Avisynth Deinterlacer, Auto Level for the Codec, maxrate, bufsize and small changes
 :: 2012-10-29 - build a new installer, most things a now automatic
 :: 2012-11-21 - fixing avisynth input, change code layout
-:: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing
+:: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing, download sources fixed
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -196,11 +196,11 @@ if exist "%AVSPluginFolder%\ffms2.dll" GOTO checkffmpeg
 	echo.
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "https://ffmpegsource.googlecode.com/files/ffms-2.17.7z"
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\FFMS2.avsi -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\ffms2.dll -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms2-r722.7z" -o"%AVSPluginFolder%" ffms2-r722\ffmsindex.exe -y
-	del "%InstallPath%\ffms2-r722.7z"
+	"%InstallPath%\wget" --no-check-certificate -P "%InstallPath%" "https://ffmpegsource.googlecode.com/files/ffms-2.17.7z"
+	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\FFMS2.avsi -y
+	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffms2.dll -y
+	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffmsindex.exe -y
+	del "%InstallPath%\ffms-2.17.7z"
 
 :checkffmpeg
 if exist "%InstallPath%\ffmpeg.exe" GOTO checkmp4box
