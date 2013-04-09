@@ -27,6 +27,7 @@
 :: 2012-10-28 - add HQ Avisynth Deinterlacer, Auto Level for the Codec, maxrate, bufsize and small changes
 :: 2012-10-29 - build a new installer, most things a now automatic
 :: 2012-11-21 - fixing avisynth input, change code layout
+:: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -560,7 +561,7 @@ for %%f in (%*) do (
 	if exist "%%f.ffindex"  del "%%f.ffindex"  
 
 	if "!AudioStream!"=="" (
-		if not !ScanType!==Progressive (
+		if !ScanType!==Interlaced (
 			echo.SetMTMode^(5, 4^) >> "%%~nf.avs"
 			echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%%~nf.avs"
 			echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%%~nf.avs"
@@ -576,16 +577,16 @@ for %%f in (%*) do (
 			"%InstallPath%\mp4box" -add "%%~nf.h264" -hint -brand mp42 "%%~nf_x264.mp4"
 			del "%%~nf.h264" 
 			del "%%~sf.ffindex" 
-			del "%%~nf.avs" 
+			del "%%~nf.avs" 	
 		) else (
 			"%InstallPath%\ffmpeg.exe" -i %%f -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264"
 
 			if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
 			"%InstallPath%\mp4box" -add "%%~nf.h264" -hint -brand mp42 "%%~nf_x264.mp4"
-			del "%%~nf.h264" 
+			del "%%~nf.h264" 		
 			)
 	) else (
-		if not !ScanType!==Progressive (
+		if !ScanType!==Interlaced (
 			echo.SetMTMode^(5, 4^) >> "%%~nf.avs"
 			echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%%~nf.avs"
 			echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%%~nf.avs"
