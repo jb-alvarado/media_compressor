@@ -417,7 +417,7 @@ if exist "%~n1.aac" del "%~n1.aac"
 if exist "%~s1.ffindex" del "%~s1.ffindex" 
 if exist "%~s2.ffindex" del "%~s2.ffindex" 
 
-if not %ScanType%==Progressive (
+if %ScanType%==Interlaced (
 	echo.SetMTMode^(5, 4^) >> "%~n1.avs"
 	echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%~n1.avs"
 	echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%~n1.avs"
