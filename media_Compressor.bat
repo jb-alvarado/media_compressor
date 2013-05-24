@@ -1,7 +1,7 @@
 ::-------------------------------------------------------------------------------------
 :: LICENSE -------------------------------------------------------------------------
 ::-------------------------------------------------------------------------------------
-::	  This Windows Batchscript is for the SendTo Menu. It compress audio and videos / folders with image sequences to mp4.
+::	  This Windows Batchscript is for the SendTo Menu. It compress audio, videos and folders with image sequences to mp4.
 ::    Copyright (C) 2012  jb_alvarado
 ::
 ::    This program is free software: you can redistribute it and/or modify
@@ -23,11 +23,12 @@
 :: History ---------------------------------------------------------------------------
 ::-------------------------------------------------------------------------------------
 ::
-:: This is version 0.95 from 2012-09-16. Last modification was on 2012-10-29
+:: This is version 0.95 from 2012-09-16. Last bigger modification was on 2013-04-09
 :: 2012-10-28 - add HQ Avisynth Deinterlacer, Auto Level for the Codec, maxrate, bufsize and small changes
 :: 2012-10-29 - build a new installer, most things a now automatic
 :: 2012-11-21 - fixing avisynth input, change code layout
 :: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing, download sources fixed
+:: 2013-05-24 - fixing small things, also a error in the input by frame sequences
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -50,7 +51,7 @@ set GOPSize=50
 :: ( GOPSize: short clips needs smaller value )
  
 set fps=
-:: ( fps: frames per second, only need this for other frame rate then 25, by frame sequences )
+:: ( fps: frames per second, only need this for other frame rate then 25 (for  frame sequences) )
 
 set aacEnc=aac -strict experimental
 :: ( use "aac -strict experimental" when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
@@ -624,7 +625,7 @@ GOTO end
 :: Folder Compression -------------------------------
  
 :folder
- 
+
 set "shortpath=%~s1"
  
 if not "%fps%" == "" GOTO comp
@@ -677,8 +678,8 @@ pushd %input%
 set "NewFileName=%newname%%%04d%ext%"
 
 pushd "%installpath%" 
-	FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %shortpath%\%file%' ) do set Width=%%k
-	FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %shortpath%\%file%' ) do set Height=%%l
+	FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" "%shortpath%\%file%"' ) do set Width=%%k
+	FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" "%shortpath%\%file%"' ) do set Height=%%l
 	popd
 
 if %Width% LEQ 1024 (
@@ -753,8 +754,8 @@ popd
 set "var=%newname%%%04d%ext%"
 
 pushd "%installpath%"
-	FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" %shortpath%\%file%' ) do set Width=%%k
-	FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" %shortpath%\%file%' ) do set Height=%%l
+	FOR /F %%k in ( 'mediainfo --Inform^=^"Image^;%%Width%%^" "%shortpath%\%file%"' ) do set Width=%%k
+	FOR /F %%l in ( 'mediainfo --Inform^=^"Image^;%%Height%%^" "%shortpath%\%file%"' ) do set Height=%%l
 	popd
 
 if %Width% LEQ 1024 (
