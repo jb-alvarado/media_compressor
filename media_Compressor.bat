@@ -246,8 +246,11 @@ if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Com
 	echo - bulding Link to the SendTo Menu
 	echo.
 	echo -------------------------------------------------------------
+	
+	if exist "%InstallPath%\FFmpeg.ico" GOTO buildlink
 	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/FFmpeg.ico"
 
+:buildlink
 	echo.Set Shell = CreateObject^("WScript.Shell"^) >> "%InstallPath%\setlink.vbs"
 	echo.Set link = Shell.CreateShortcut^("C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk"^) >> "%InstallPath%\setlink.vbs"
 	echo.link.Arguments = "" >> "%InstallPath%\setlink.vbs"
