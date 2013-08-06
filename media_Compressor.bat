@@ -29,6 +29,7 @@
 :: 2012-11-21 - fixing avisynth input, change code layout
 :: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing, download sources fixed
 :: 2013-05-24 - fixing small things, also a error in the input by frame sequences
+:: 2013-08-06 - simplify downloads
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -89,15 +90,27 @@ if not exist "%InstallPath%\readme" MD "%InstallPath%\readme"
 if exist "%InstallPath%\wget.exe" GOTO check7z
 	echo -------------------------------------------------------------
 	echo.
-	echo - please download and copy wget.exe to:
+	echo - please download and copy wget_install.exe to:
 	echo - %InstallPath% 
 	echo.
 	echo - hit key for download
 	echo.
 	echo -------------------------------------------------------------
 	pause
-	start "" "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
+	start "" "http://blog.pixelcrusher.de/downloads/media_compressor/wget_install.exe"
+	
+	echo.
+	echo -------------------------------------------------------------
+	echo - when download is finish hit key again
+	echo -------------------------------------------------------------
+	echo.
 	pause
+	pushd %InstallPath%
+	"%InstallPath%\wget_install.exe"
+	popd
+	move "%InstallPath%\wget_COPYING.txt" "%InstallPath%\license"
+	move "%InstallPath%\wget_README.txt" "%InstallPath%\readme"
+	del "%InstallPath%\wget_install.exe"
 if not exist "%InstallPath%\wget.exe" GOTO checkwget
 
 :check7z
@@ -108,7 +121,7 @@ if exist "%InstallPath%\7za.exe" GOTO checkavisynth
 	echo.
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/7za920.exe"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/7za920.exe"
 	pushd %InstallPath%
 	"%InstallPath%\7za920.exe"
 	popd
@@ -118,76 +131,75 @@ if exist "%InstallPath%\7za.exe" GOTO checkavisynth
 	del "%InstallPath%\7za920.exe"
   
 :checkavisynth
-if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkdevIL
-if exist "%windir%\System32\avisynth.dll" GOTO checkdevIL
+if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkQTGMC
+if exist "%windir%\System32\avisynth.dll" GOTO checkQTGMC
 	echo -------------------------------------------------------------
 	echo.
 	echo - Avisynth will be download and install
 	echo.
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" http://sourceforge.net/projects/avisynth2/files/latest/download?source=files
-	"%InstallPath%\AviSynth_110525.exe" /S
-	del "%InstallPath%\AviSynth_110525.exe"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/Avisynth_258.exe"
+	"%InstallPath%\Avisynth_258.exe" /S
+	del "%InstallPath%\Avisynth_258.exe"
 if exist "%windir%\SysWOW64\DevIL.dll" del "%windir%\SysWOW64\devil.dll"
 if exist "%windir%\System32\DevIL.dll" del "%windir%\System32\devil.dll"
-
-:checkdevIL
-if exist "%windir%\SysWOW64\DevIL.dll" GOTO checkQTGMC
-if exist "%windir%\System32\DevIL.dll" GOTO checkQTGMC
-	echo -------------------------------------------------------------
-	echo.
-	echo - Avisynth will be patched and adjusted
-	echo.
-	echo.
-	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://downloads.sourceforge.net/project/openil/DevIL Win32/1.7.8/DevIL-EndUser-x86-1.7.8.zip"
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\DevIL-EndUser-x86-1.7.8.zip" -o%windir%\SysWOW64 *.dll -r -y
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\DevIL-EndUser-x86-1.7.8.zip" -o%windir%\System32 *.dll -r -y
-
-"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/avisynth.7z"
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\avisynth.7z" -o"%windir%\SysWOW64" *.dll -r -y
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\avisynth.7z" -o"%windir%\System32" *.dll -r -y
-
-del "%InstallPath%\DevIL-EndUser-x86-1.7.8.zip"
-del "%InstallPath%\avisynth.7z"
 
 :checkQTGMC
 if exist "%AVSPluginFolder%\QTGMC-3.32.avsi" GOTO checkffms
 	echo -------------------------------------------------------------
 	echo.
-	echo - The deinterlacer QTGMC will be download and install
+	echo - Avisynth will be patched and adjusted
+	echo - The deinterlacer QTGMC will be install
 	echo.
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://www.spirton.com/uploads/QTGMC/QTGMC 32-bit Plugins [Vit-Mod].zip"
-	"%InstallPath%\wget" -P "%InstallPath%" "http://www.spirton.com/uploads/QTGMC/QTGMC-3.32.zip"
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%windir%\SysWOW64" fftw3.dll -r -y
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%windir%\SysWOW64" libfftw3f-3.dll -r -y
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%windir%\System32" fftw3.dll -r -y
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%windir%\System32" libfftw3f-3.dll -r -y
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/QTGMC_32-bit_[Vit-Mod]_jb_pack.7z"
 
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" mt_masktools-26.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" AddGrainC.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" dfttest.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" EEDI2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" eedi3.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" FFT3DFilter.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" mvtools2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" nnedi.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" nnedi2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" nnedi3.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" RemoveGrainSSE2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" RepairSSE2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" SSE2Tools.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" TDeint.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" VerticalCleanerSSE2.dll -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip" -o"%AVSPluginFolder%" yadif.dll -r -y
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 avisynth.dll
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 DevIL.dll
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 fftw3.dll 
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 ILU.dll 
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 ILUT.dll 
+if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 libfftw3f-3.dll
 
-	"%InstallPath%\7za.exe" e "%InstallPath%\QTGMC-3.32.zip" -o"%AVSPluginFolder%" -r -y
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 avisynth.dll 
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 DevIL.dll 
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 fftw3.dll 
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 ILU.dll
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 ILUT.dll 
+if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 libfftw3f.dll 
 
-	del "%InstallPath%\QTGMC 32-bit Plugins [Vit-Mod].zip"
-	del "%InstallPath%\QTGMC-3.32.zip"
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" QTGMC-3.32.avsi
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\help" QTGMC-3.32.html
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\readme" Avisynth_2.6_MT.URL 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\readme" Avisynth_rev._2.URL
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\readme" QTGMC_READ_ME.txt 
+	
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\license" avisynth_gpl.txt
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\license" avisynth_gpl-de.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\license" avisynth_lgpl_for_used_libs.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\license" DevIL_lgpl.txt
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\license" QTGMC_gpl.txt
+
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" AddGrainC.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" dfttest.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" EEDI2.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" eedi3.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" FFT3DFilter.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" mt_masktools-26.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" mvtools2.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" nnedi.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" nnedi2.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" nnedi3.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" RemoveGrainSSE2.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" RepairSSE2.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" SSE2Tools.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" TDeint.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" VerticalCleanerSSE2.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" yadif.dll
+
+	del "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z"
 
 :checkffms
 if exist "%AVSPluginFolder%\ffms2.dll" GOTO checkffmpeg
@@ -198,9 +210,9 @@ if exist "%AVSPluginFolder%\ffms2.dll" GOTO checkffmpeg
 	echo.
 	echo -------------------------------------------------------------
 	"%InstallPath%\wget" --no-check-certificate -P "%InstallPath%" "https://ffmpegsource.googlecode.com/files/ffms-2.17.7z"
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\FFMS2.avsi -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffms2.dll -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffmsindex.exe -y
+	"%InstallPath%\7za.exe" e -y "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\FFMS2.avsi
+	"%InstallPath%\7za.exe" e -y "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffms2.dll
+	"%InstallPath%\7za.exe" e -y "%InstallPath%\ffms-2.17.7z" -o"%AVSPluginFolder%" ffms-2.17\ffmsindex.exe
 	del "%InstallPath%\ffms-2.17.7z"
 
 :checkffmpeg
@@ -212,7 +224,7 @@ if exist "%InstallPath%\ffmpeg.exe" GOTO checkmp4box
 	echo.
 	echo -------------------------------------------------------------
 	"%InstallPath%\wget" -P "%InstallPath%" http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
-	"%InstallPath%\7za.exe" e "%InstallPath%\ffmpeg-latest-win32-static.7z" -o"%InstallPath%" *.exe -r -y
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\ffmpeg-latest-win32-static.7z" -o"%InstallPath%" *.exe 
 	del "%InstallPath%\ffmpeg-latest-win32-static.7z"
  
 :checkmp4box
@@ -222,10 +234,12 @@ if exist "%InstallPath%\mp4box.exe" GOTO checkMediaInfo
 	echo - mp4box the multiplexer will be install
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" http://kurtnoise.free.fr/mp4tools/MP4Box-0.4.6-rev2735.zip
-	"%InstallPath%\7za.exe" e "%InstallPath%\mp4box-0.4.6-rev2735.zip" -o"%InstallPath%" *.exe -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\mp4box-0.4.6-rev2735.zip" -o"%InstallPath%" *.dll -r -y
-	del "%InstallPath%\mp4box"-0.4.6-rev2735.zip"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/MP4Box_0.5.7z"
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%" *.exe 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%" *.dll
+	"%InstallPath%\7za.exe" e  -r -y"%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%\license" MP4Box_License.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%\readme" MP4Box_ReadMe.txt 
+	del "%InstallPath%\MP4Box_0.5.7z"
 
 :checkMediaInfo
 if exist "%InstallPath%\MediaInfo.exe" GOTO checklink
@@ -234,10 +248,14 @@ if exist "%InstallPath%\MediaInfo.exe" GOTO checklink
 	echo - MediaInfo will be install
 	echo.
 	echo --------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://downloads.sourceforge.net/project/mediainfo/binary/mediainfo/0.7.61/MediaInfo_CLI_0.7.61_Windows_i386.zip"
-	"%InstallPath%\7za.exe" e "%InstallPath%\MediaInfo_CLI_0.7.61_Windows_i386.zip" -o"%InstallPath%" *.exe -r -y
-	"%InstallPath%\7za.exe" e "%InstallPath%\MediaInfo_CLI_0.7.61_Windows_i386.zip" -o"%InstallPath%" *.dll -r -y
-	del "%InstallPath%\MediaInfo_CLI_0.7.61_Windows_i386.zip"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/MediaInfo_CLI_0.7.64_Windows_i386.7z"
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%" *.exe
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%" *.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%\license" MediaInfo_License.html 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%\readme" MediaInfo_History.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%\readme" MediaInfo_ReadMe.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z" -o"%InstallPath%\help" CLI_Help.doc 
+	del "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z"
  
 :checklink
 if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk" GOTO checkself
@@ -248,7 +266,7 @@ if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Com
 	echo -------------------------------------------------------------
 	
 	if exist "%InstallPath%\FFmpeg.ico" GOTO buildlink
-	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/FFmpeg.ico"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/FFmpeg.ico"
 
 :buildlink
 	echo.Set Shell = CreateObject^("WScript.Shell"^) >> "%InstallPath%\setlink.vbs"
