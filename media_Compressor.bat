@@ -42,10 +42,10 @@ title media_Compressor
  
 :: EncoderSettings -------------------------------
 
-set preset=slow
+set preset=slower
 :: ( preset defined how exactly the x264 codec work, slower better and smaller but slower: ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow, placebo )
 
-set quality=22
+set quality=20
 :: ( quality: 20-26 useful, smaller better quality )
  
 set GOPSize=50
@@ -413,7 +413,7 @@ if %Width% GEQ 1280 (
 	)
 
 if %Width% GEQ 1920 (
-	set level=5.1
+	set level=4.1 -refs 4
 	set maxrate=20M 
 	set bufsize=20M
 	)
@@ -557,7 +557,7 @@ for %%f in (%*) do (
 		)
 
 	if !Width! GEQ 1920 (
-		set level=5.1
+		set level=4.1 -refs 4
 		set maxrate=20M 
 		set bufsize=20M
 		)
@@ -716,7 +716,7 @@ if %Width% GEQ 1280 (
 	)
 
 if %Width% GEQ 1920 (
-	set level=5.1
+	set level=4.1 -refs 4
 	set maxrate=20M 
 	set bufsize=20M
 	)
@@ -792,7 +792,7 @@ if %Width% GEQ 1280 (
 	)
 
 if %Width% GEQ 1920 (
-	set level=5.1
+	set level=4.1 -refs 4
 	set maxrate=20M 
 	set bufsize=20M
 	)
