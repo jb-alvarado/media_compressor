@@ -30,12 +30,12 @@
 :: 2013-04-09 - changing video input, now it use avisynth only for deinterlacing, download sources fixed
 :: 2013-05-24 - fixing small things, also a error in the input by frame sequences
 :: 2013-08-06 - simplify downloads
+:: 2013-09-08 - simplify installation, add new static mp4box, add now wget and change first download from browser to jscript download
 ::
 ::-------------------------------------------------------------------------------------
 
 
 @echo off
-Setlocal EnableDelayedExpansion 
  
 color 87
 title media_Compressor
@@ -73,44 +73,43 @@ set audioExt=.mp3
 if exist "C:\Program Files (x86)" (
 	set "InstallPath=C:\Program Files (x86)\BatchMediaCompressor"
 	set "AVSPluginFolder=C:\Program Files (x86)\AviSynth 2.5\plugins"
-	if exist "!InstallPath!" GOTO checkwget
-	MD "!InstallPath!"
-) else (
-	set "InstallPath=C:\Program Files\BatchMediaCompressor"
-	set "AVSPluginFolder=C:\Program Files\AviSynth 2.5\plugins"
-	if exist "!InstallPath!" GOTO checkwget
-	MD "!InstallPath!"
-	)
-  
-:checkwget
-if not exist "%InstallPath%\license" MD "%InstallPath%\license"
-if not exist "%InstallPath%\help" MD "%InstallPath%\help"
-if not exist "%InstallPath%\readme" MD "%InstallPath%\readme"	
+	) else (
+		set "InstallPath=C:\Program Files\BatchMediaCompressor"
+		set "AVSPluginFolder=C:\Program Files\AviSynth 2.5\plugins"
+		)
+if exist "%InstallPath%" GOTO checkwget
+MD "%InstallPath%"	
 
+:checkwget
 if exist "%InstallPath%\wget.exe" GOTO check7z
 	echo -------------------------------------------------------------
 	echo.
-	echo - please download and copy wget_install.exe to:
+	echo - Download and install wget to:
 	echo - %InstallPath% 
 	echo.
-	echo - hit key for download
-	echo.
 	echo -------------------------------------------------------------
-	pause
-	start "" "http://blog.pixelcrusher.de/downloads/media_compressor/wget_install.exe"
-	
-	echo.
-	echo -------------------------------------------------------------
-	echo - when download is finish hit key again
-	echo -------------------------------------------------------------
-	echo.
-	pause
 	pushd %InstallPath%
-	"%InstallPath%\wget_install.exe"
+	if exist "%InstallPath%\install-wget.js" del "%InstallPath%\install-wget.js"
+	
+	echo.var wshell = new ActiveXObject("WScript.Shell"); var htmldoc = new ActiveXObject("htmlfile"); var xmlhttp = new ActiveXObject("MSXML2.ServerXMLHTTP"); var adodb = new ActiveXObject("ADODB.Stream"); var FSO = new ActiveXObject("Scripting.FileSystemObject")>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.function http_get(url, is_binary) {xmlhttp.open("GET", url); xmlhttp.send(); WScript.echo("retrieving " + url); while (xmlhttp.readyState != 4); WScript.Sleep(100); if (xmlhttp.status != 200) {WScript.Echo("http get failed: " + xmlhttp.status); WScript.Quit(2)}; return is_binary ? xmlhttp.responseBody : xmlhttp.responseText}>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.function save_binary(path, data) {adodb.type = 1; adodb.open(); adodb.write(data); adodb.saveToFile(path, 2)}>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.function download_wget() {var base_url = "http://blog.pixelcrusher.de/downloads/media_compressor/wget.zip"; html = http_get(base_url, false); htmldoc.open(); htmldoc.write(html); var div = htmldoc.getElementById("downloading"); var filename = "wget.zip"; var installer_data = http_get(base_url, true); save_binary(filename, installer_data); return FSO.GetAbsolutePathName(filename)}>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.function extract_zip(zip_file, dstdir) {var shell = new ActiveXObject("shell.application"); var dst = shell.NameSpace(dstdir); var zipdir = shell.NameSpace(zip_file); dst.CopyHere(zipdir.items(), 0)}>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.function install_wget(zip_file) {var rootdir = wshell.CurrentDirectory; extract_zip(zip_file, rootdir)}>>"%InstallPath%\install-wget.js"
+	echo.>>"%InstallPath%\install-wget.js"
+	echo.install_wget(download_wget())>>"%InstallPath%\install-wget.js"
+
+	cscript "%InstallPath%\install-wget.js"
+
+	del "%InstallPath%\install-wget.js"
+	del "%InstallPath%\wget.zip"
 	popd
-	move "%InstallPath%\wget_COPYING.txt" "%InstallPath%\license"
-	move "%InstallPath%\wget_README.txt" "%InstallPath%\readme"
-	del "%InstallPath%\wget_install.exe"
 if not exist "%InstallPath%\wget.exe" GOTO checkwget
 
 :check7z
@@ -234,12 +233,11 @@ if exist "%InstallPath%\mp4box.exe" GOTO checkMediaInfo
 	echo - mp4box the multiplexer will be install
 	echo.
 	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/MP4Box_0.5.7z"
-	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%" *.exe 
-	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%" *.dll
-	"%InstallPath%\7za.exe" e  -r -y"%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%\license" MP4Box_License.txt 
-	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\MP4Box_0.5.7z" -o"%InstallPath%\readme" MP4Box_ReadMe.txt 
-	del "%InstallPath%\MP4Box_0.5.7z"
+	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/mp4box.7z"
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\mp4box.7z" -o"%InstallPath%" *.exe 
+	"%InstallPath%\7za.exe" e  -r -y"%InstallPath%\mp4box.7z" -o"%InstallPath%\license" MP4Box_License.txt 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\mp4box.7z" -o"%InstallPath%\readme" MP4Box_ReadMe.txt 
+	del "%InstallPath%\mp4box.7z"
 
 :checkMediaInfo
 if exist "%InstallPath%\MediaInfo.exe" GOTO checklink
@@ -315,6 +313,7 @@ if exist "%InstallPath%\Uninstall.bat" GOTO runscript
 	exit
 
 :runscript
+Setlocal EnableDelayedExpansion 
 
 set "input=%~1"
 if "%input%"=="" (
@@ -401,13 +400,13 @@ pushd "%installpath%"
 popd
 
 if %Width% LEQ 1024 (
-	set level=3.2
+	set level=3.2 -refs 4
 	set maxrate=4M 
 	set bufsize=4M
 	)
 
 if %Width% GEQ 1280 (
-	set level=4.1
+	set level=4.1 -refs 4
 	set maxrate=10M 
 	set bufsize=10M
 	)
@@ -545,13 +544,13 @@ for %%f in (%*) do (
 	set "infile=%%~sf"
 
 	if !Width! LEQ 1024 (
-		set level=3.2
+		set level=3.2 -refs 4
 		set maxrate=4M 
 		set bufsize=4M
 		)
 
 	if !Width! GEQ 1280 (
-		set level=4.1
+		set level=4.1 -refs 4
 		set maxrate=10M 
 		set bufsize=10M
 		)
@@ -704,13 +703,13 @@ pushd "%installpath%"
 	popd
 
 if %Width% LEQ 1024 (
-	set level=3.2
+	set level=3.2 -refs 4
 	set maxrate=4M 
 	set bufsize=4M
 	)
 
 if %Width% GEQ 1280 (
-	set level=4.1
+	set level=4.1 -refs 4
 	set maxrate=10M 
 	set bufsize=10M
 	)
@@ -780,13 +779,13 @@ pushd "%installpath%"
 	popd
 
 if %Width% LEQ 1024 (
-	set level=3.2
+	set level=3.2 -refs 4
 	set maxrate=4M 
 	set bufsize=4M
 	)
 
 if %Width% GEQ 1280 (
-	set level=4.1
+	set level=4.1 -refs 4
 	set maxrate=10M 
 	set bufsize=10M
 	)
