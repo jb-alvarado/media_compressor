@@ -394,9 +394,9 @@ set "audInput=%~s2"
 pushd "%installpath%"
 	FOR /F %%i in ( 'mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %vidInput%' ) do set ScanType=%%i
 	FOR /F %%j in ( 'mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %vidInput%' ) do set aspect=%%j
-	FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width/String%%^" %vidInput%' ) do set Width=%%k
-	FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height/String%%^" %vidInput%' ) do set Height=%%l
-	FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %vidInput%' ) do set Duration=%%m
+	FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width%%^" %vidInput%' ) do set Width=%%k
+	FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height%%^" %vidInput%' ) do set Height=%%l
+	FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String3%%^" %vidInput%' ) do set Duration=%%m
 popd
 
 if %Width% LEQ 1024 (
@@ -535,9 +535,9 @@ for %%f in (%*) do (
 	pushd "%installpath%"
 		FOR /F %%i in ( 'mediainfo --Inform^=^"Video^;%%ScanType/String%%^" %%f' ) do set ScanType=%%i
 		FOR /F %%j in ( 'mediainfo --Inform^=^"Video^;%%DisplayAspectRatio%%^" %%f' ) do set aspect=%%j
-		FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width/String%%^" %%f' ) do set Width=%%k
-		FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height/String%%^" %%f' ) do set Height=%%l
-		FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String1%%^" %%f' ) do set Duration=%%m
+		FOR /F %%k in ( 'mediainfo --Inform^=^"Video^;%%Width%%^" %%f' ) do set Width=%%k
+		FOR /F %%l in ( 'mediainfo --Inform^=^"Video^;%%Height%%^" %%f' ) do set Height=%%l
+		FOR /F %%m in ( 'mediainfo --Inform^=^"Video^;%%Duration/String3%%^" %%f' ) do set Duration=%%m
 		FOR /F %%n in ( 'mediainfo --Inform^=^"Audio^;%%StreamCount%%^" %%f' ) do set AudioStream=%%n
 		popd
 
