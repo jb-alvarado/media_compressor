@@ -7,7 +7,7 @@ author: Jonathan Baecker (jb_alvarado)
 
 created:  2012 September 16
 
-modified: 2013 September 08
+modified: 2013 November 28
 
 ---
 
@@ -27,7 +27,7 @@ Download
 
 ### [Click here to download latest version](https://github.com/jb-alvarado/media_compressor/archive/master.zip)
 
-Current release is **v0.95**
+Current release is **v0.98**
 
 Installation 
 --------

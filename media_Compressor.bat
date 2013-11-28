@@ -31,6 +31,8 @@
 :: 2013-05-24 - fixing small things, also a error in the input by frame sequences
 :: 2013-08-06 - simplify downloads
 :: 2013-09-08 - simplify installation, add new static mp4box, add now wget and change first download from browser to jscript download
+:: 2013-11-*   - add timer function
+:: 2013-11-28 - fixing bug in path how have a german umlaut
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@ set preset=slower
 set quality=20
 :: ( quality: 20-26 useful, smaller better quality )
  
-set GOPSize=50
+set GOPSize=25
 :: ( GOPSize: short clips needs smaller value )
  
 set fps=
@@ -580,6 +582,13 @@ for %%f in (%*) do (
 	if exist "%%~nf.aac" del "%%~nf.aac" 
 	if exist "%%~nf.avs" del "%%~nf.avs"  
 	if exist "%%f.ffindex"  del "%%f.ffindex"  
+	
+	set timeStart=%time%
+	set startHour=!timeStart:~0,2!
+	set startMinutes=!timeStart:~3,2!
+	set startSeconds=!timeStart:~6,2!
+	 
+	set /a startTotalSec=!startHour!*60*60+!startMinutes!*60+!startSeconds!
 
 	if "!AudioStream!"=="" (
 		if !ScanType!==Interlaced (
@@ -637,6 +646,22 @@ for %%f in (%*) do (
 			)
 		)
 	)
+
+	set timeEnd=%time%
+	set endHour=!timeEnd:~0,2!
+	set endMinutes=!timeEnd:~3,2!
+	set endSeconds=!timeEnd:~6,2!
+	 
+	set /a endTotalSec=!endHour!*60*60+!endMinutes!*60+!endSeconds!
+	set /a diffTimeSec=!endTotalSec!-!startTotalSec!
+
+	echo.
+	echo.
+	echo....................................................................
+	echo. time for converting: !diffTimeSec! seconds..................................
+	echo....................................................................
+	echo.
+	echo.
 
 GOTO end
 
@@ -733,12 +758,36 @@ echo....................................................................
 echo....................................................................
 echo.
 
-"%InstallPath%\ffmpeg.exe" -start_number %startframe% -i "%input%\%NewFileName%" -r %fps% -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%input%\..\%newname%.h264"
+set timeStart=%time%
+set startHour=%timeStart:~0,2%
+set startMinutes=%timeStart:~3,2%
+set startSeconds=%timeStart:~6,2%
+ 
+set /a startTotalSec=%startHour%*60*60+%startMinutes%*60+%startSeconds%
 
-if exist "%input%\..\%newname%_x264.mp4" del "%input%\..\%newname%_x264.mp4"
-"%InstallPath%\mp4box" -add "%input%\..\%newname%.h264" -hint -brand mp42 "%input%\..\%newname%_x264.mp4"
-del "%input%\..\%newname%.h264"
+pushd %input%
+	"%InstallPath%\ffmpeg.exe" -start_number %startframe% -i "%NewFileName%" -r %fps% -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "..\%newname%.h264"
 
+	if exist "..\%newname%_x264.mp4" del "..\%newname%_x264.mp4"
+	"%InstallPath%\mp4box" -add "..\%newname%.h264" -hint -brand mp42 "..\%newname%_x264.mp4"
+	del "..\%newname%.h264"
+	popd
+
+set timeEnd=%time%
+set endHour=%timeEnd:~0,2%
+set endMinutes=%timeEnd:~3,2%
+set endSeconds=%timeEnd:~6,2%
+ 
+set /a endTotalSec=%endHour%*60*60+%endMinutes%*60+%endSeconds%
+set /a diffTimeSec=%endTotalSec%-%startTotalSec%
+
+echo.
+echo.
+echo....................................................................
+echo. time for converting: %diffTimeSec% seconds..................................
+echo....................................................................
+echo.
+echo.
 GOTO end
 
  
@@ -809,19 +858,20 @@ echo....................................................................
 echo....................................................................
 echo.
 
-if exist "%input%\..\%~n1_tmp.avs" del "%input%\..\%~n1_tmp.avs"
+pushd %input%
+	if exist "..\%~n1_tmp.avs" del "..\%~n1_tmp.avs"
 
-echo ImageReader^( "%input%\%var%", start=%startframe%, end=%endframe%, fps=%fps% ^, use_DevIL = true) >> "%input%\..\%~n1_tmp.avs"
-echo Levels^(0,%gamma%,255,0,255^) >> "%input%\..\%~n1_tmp.avs"
+	echo ImageReader^( "%var%", start=%startframe%, end=%endframe%, fps=%fps% ^, use_DevIL = true) >>"%~n1_tmp.avs"
+	echo Levels^(0,%gamma%,255,0,255^) >> "%~n1_tmp.avs"
 
-"%InstallPath%\ffmpeg.exe" -i "%input%\..\%~n1_tmp.avs" -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "%input%\..\%newname%.h264"
+	"%InstallPath%\ffmpeg.exe" -i "%~n1_tmp.avs" -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "..\%newname%.h264"
 
-if exist "%input%\..\%newname%_x264.mp4" del "%input%\..\%newname%_x264.mp4"
-"%InstallPath%\mp4box" -add "%input%\..\%newname%.h264" -hint -brand mp42 "%input%\..\%newname%_x264.mp4"
-del "%input%\..\%newname%.h264"
+	if exist "..\%newname%_x264.mp4" del "..\%newname%_x264.mp4"
+	"%InstallPath%\mp4box" -add "..\%newname%.h264" -hint -brand mp42 "..\%newname%_x264.mp4"
+	del "..\%newname%.h264"
+	del "%~n1_tmp.avs"
+	popd 
 
-if exist "%input%\..\%~n1_tmp.avs" del "%input%\..\%~n1_tmp.avs"
-  
 :end
 echo.
 echo....................................................................
