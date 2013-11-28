@@ -5,9 +5,9 @@ description: A simple Script for compression Audio, Video and Frame Sequences.
 
 author: Jonathan Baecker (jb_alvarado)
 
-created:  2012 September 16
+created:  2012-09-16
 
-modified: 2013 November 28
+modified: 2013-11-28
 
 ---
 
