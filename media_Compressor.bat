@@ -31,7 +31,7 @@
 :: 2013-05-24 - fixing small things, also a error in the input by frame sequences
 :: 2013-08-06 - simplify downloads
 :: 2013-09-08 - simplify installation, add new static mp4box, add now wget and change first download from browser to jscript download
-:: 2013-11-*   - add timer function
+:: 2013-11-*  - add timer function
 :: 2013-11-28 - fixing bug in path how have a german umlaut
 ::
 ::-------------------------------------------------------------------------------------
