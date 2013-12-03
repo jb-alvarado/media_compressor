@@ -33,6 +33,7 @@
 :: 2013-09-08 - simplify installation, add new static mp4box, add now wget and change first download from browser to jscript download
 :: 2013-11-*  - add timer function
 :: 2013-11-28 - fixing bug in path how have a german umlaut
+:: 2013-12-03 - simplify installation, no avisynth install anymore, also add some warning because of the write access to the install dir
 ::
 ::-------------------------------------------------------------------------------------
 
@@ -74,13 +75,14 @@ set audioExt=.mp3
 ::------------------------------------------------------------------------------
 if exist "C:\Program Files (x86)" (
 	set "InstallPath=C:\Program Files (x86)\BatchMediaCompressor"
-	set "AVSPluginFolder=C:\Program Files (x86)\AviSynth 2.5\plugins"
+	set "AVSPluginFolder=C:\Program Files (x86)\BatchMediaCompressor\plugins"
 	) else (
 		set "InstallPath=C:\Program Files\BatchMediaCompressor"
-		set "AVSPluginFolder=C:\Program Files\AviSynth 2.5\plugins"
+		set "AVSPluginFolder=C:\Program Files\BatchMediaCompressor\plugins"
 		)
 if exist "%InstallPath%" GOTO checkwget
 MD "%InstallPath%"	
+MD "%AVSPluginFolder%"
 
 :checkwget
 if exist "%InstallPath%\wget.exe" GOTO check7z
@@ -112,10 +114,20 @@ if exist "%InstallPath%\wget.exe" GOTO check7z
 	del "%InstallPath%\install-wget.js"
 	del "%InstallPath%\wget.zip"
 	popd
-if not exist "%InstallPath%\wget.exe" GOTO checkwget
+if not exist "%InstallPath%\wget.exe" (
+	echo -------------------------------------------------------------
+	echo.
+	echo install-wget.js and wget not installed...
+	echo check internet connection and write access to:
+	echo "%InstallPath%"
+	echo.
+	echo -------------------------------------------------------------
+	pause
+	GOTO checkwget
+	)
 
 :check7z
-if exist "%InstallPath%\7za.exe" GOTO checkavisynth
+if exist "%InstallPath%\7za.exe" GOTO checkQTGMC
 	echo -------------------------------------------------------------
 	echo.
 	echo - 7z download and install start...
@@ -130,46 +142,24 @@ if exist "%InstallPath%\7za.exe" GOTO checkavisynth
 	move "%InstallPath%\7-zip.chm" "%InstallPath%\help"
 	move "%InstallPath%\7zip-readme.txt" "%InstallPath%\readme"
 	del "%InstallPath%\7za920.exe"
-  
-:checkavisynth
-if exist "%windir%\SysWOW64\avisynth.dll" GOTO checkQTGMC
-if exist "%windir%\System32\avisynth.dll" GOTO checkQTGMC
-	echo -------------------------------------------------------------
-	echo.
-	echo - Avisynth will be download and install
-	echo.
-	echo.
-	echo -------------------------------------------------------------
-	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/Avisynth_258.exe"
-	"%InstallPath%\Avisynth_258.exe" /S
-	del "%InstallPath%\Avisynth_258.exe"
-if exist "%windir%\SysWOW64\DevIL.dll" del "%windir%\SysWOW64\devil.dll"
-if exist "%windir%\System32\DevIL.dll" del "%windir%\System32\devil.dll"
-
+ 
 :checkQTGMC
 if exist "%AVSPluginFolder%\QTGMC-3.32.avsi" GOTO checkffms
 	echo -------------------------------------------------------------
 	echo.
-	echo - Avisynth will be patched and adjusted
+	echo - Avisynth will be install and adjusted
 	echo - The deinterlacer QTGMC will be install
 	echo.
 	echo.
 	echo -------------------------------------------------------------
 	"%InstallPath%\wget" -P "%InstallPath%" "http://blog.pixelcrusher.de/downloads/media_compressor/QTGMC_32-bit_[Vit-Mod]_jb_pack.7z"
 
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 avisynth.dll
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 DevIL.dll
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 fftw3.dll 
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 ILU.dll 
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 ILUT.dll 
-if exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\SysWOW64 libfftw3f-3.dll
-
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 avisynth.dll 
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 DevIL.dll 
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 fftw3.dll 
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 ILU.dll
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 ILUT.dll 
-if not exist "%windir%\SysWOW64" "%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o%windir%\System32 libfftw3f.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" avisynth.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" DevIL.dll
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" fftw3.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" ILU.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" ILUT.dll 
+	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%" libfftw3f-3.dll
 
 	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%AVSPluginFolder%" QTGMC-3.32.avsi
 	"%InstallPath%\7za.exe" e -r -y "%InstallPath%\QTGMC_32-bit_[Vit-Mod]_jb_pack.7z" -o"%InstallPath%\help" QTGMC-3.32.html
@@ -258,7 +248,7 @@ if exist "%InstallPath%\MediaInfo.exe" GOTO checklink
 	del "%InstallPath%\MediaInfo_CLI_0.7.64_Windows_i386.7z"
  
 :checklink
-if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk" GOTO checkself
+if exist "%APPDATA%\Microsoft\Windows\SendTo\media_Compressor.lnk" GOTO checkself
 	echo -------------------------------------------------------------
 	echo.
 	echo - bulding Link to the SendTo Menu
@@ -270,7 +260,7 @@ if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Com
 
 :buildlink
 	echo.Set Shell = CreateObject^("WScript.Shell"^) >> "%InstallPath%\setlink.vbs"
-	echo.Set link = Shell.CreateShortcut^("C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Compressor.lnk"^) >> "%InstallPath%\setlink.vbs"
+	echo.Set link = Shell.CreateShortcut^("%InstallPath%\media_Compressor.lnk"^) >> "%InstallPath%\setlink.vbs"
 	echo.link.Arguments = "" >> "%InstallPath%\setlink.vbs"
 	echo.link.Description = "Compress Video or Audio Files, Framesequences or multiplex Video and Audio Files to MP4" >> "%InstallPath%\setlink.vbs"
 	echo.link.IconLocation = "%InstallPath%\FFmpeg.ico" >> "%InstallPath%\setlink.vbs"
@@ -280,8 +270,19 @@ if exist "C:\Users\%username%\AppData\Roaming\Microsoft\Windows\SendTo\media_Com
 	echo.link.Save>> "%InstallPath%\setlink.vbs" 
 
 	cscript /nologo "%InstallPath%\setlink.vbs" 
+	copy "%InstallPath%\media_Compressor.lnk" "%APPDATA%\Microsoft\Windows\SendTo\media_Compressor.lnk"
 	del "%InstallPath%\setlink.vbs" 
-
+	
+	if not exist "%APPDATA%\Microsoft\Windows\SendTo\media_Compressor.lnk" (
+		echo -------------------------------------------------------------
+		echo.
+		echo write link to the sendto menu failed.
+		echo copy "%InstallPath%\media_Compressor.lnk" to:
+		echo "%APPDATA%\Microsoft\Windows\SendTo"
+		echo.
+		echo -------------------------------------------------------------
+	)
+	
 :checkself
 if exist "%InstallPath%\media_Compressor.bat" GOTO runscript
 	copy /Y "%~f0" "%InstallPath%"
@@ -442,7 +443,13 @@ if exist "%~s2.ffindex" del "%~s2.ffindex"
 
 if %ScanType%==Interlaced (
 	echo.SetMTMode^(5, 4^) >> "%~n1.avs"
-	echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%~n1.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%%~nf.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\mt_masktools-26.dll"^) >> "%%~nf.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\RemoveGrainSSE2.dll"^) >> "%%~nf.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\RepairSSE2.dll"^) >> "%%~nf.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\mvtools2.dll"^) >> "%%~nf.avs"
+	echo.LoadPlugin("%AVSPluginFolder%\nnedi3.dll"^) >> "%%~nf.avs"
+	echo.YadifPath ="%AVSPluginFolder%\yadif.dll" >> "%%~nf.avs"
 	echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%~n1.avs"
 	echo.A = FFAudioSource^("%audInput%"^) >> "%~n1.avs"
 	echo.V = FFVideoSource^("%vidInput%"^) >> "%~n1.avs"
@@ -594,6 +601,12 @@ for %%f in (%*) do (
 		if !ScanType!==Interlaced (
 			echo.SetMTMode^(5, 4^) >> "%%~nf.avs"
 			echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\mt_masktools-26.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\RemoveGrainSSE2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\RepairSSE2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\mvtools2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\nnedi3.dll"^) >> "%%~nf.avs"
+			echo.YadifPath ="%AVSPluginFolder%\yadif.dll" >> "%%~nf.avs"
 			echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%%~nf.avs"
 			echo.FFVideoSource^("!infile!"^) >> "%%~nf.avs"
 			echo.SetMTMode^(2^) >> "%%~nf.avs"
@@ -619,6 +632,12 @@ for %%f in (%*) do (
 		if !ScanType!==Interlaced (
 			echo.SetMTMode^(5, 4^) >> "%%~nf.avs"
 			echo.LoadPlugin("%AVSPluginFolder%\ffms2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\mt_masktools-26.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\RemoveGrainSSE2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\RepairSSE2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\mvtools2.dll"^) >> "%%~nf.avs"
+			echo.LoadPlugin("%AVSPluginFolder%\nnedi3.dll"^) >> "%%~nf.avs"
+			echo.YadifPath ="%AVSPluginFolder%\yadif.dll" >> "%%~nf.avs"
 			echo.Import^("%AVSPluginFolder%\QTGMC-3.32.avsi"^) >> "%%~nf.avs"
 			echo.A = FFAudioSource^("!infile!"^) >> "%%~nf.avs"
 			echo.V = FFVideoSource^("!infile!"^) >> "%%~nf.avs"
@@ -631,11 +650,11 @@ for %%f in (%*) do (
 			"%InstallPath%\ffmpeg.exe" -y -i "%%~nf.avs" -aspect !Aspect! -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264" -c:a %aacEnc% -ab %audioBit% "%%~nf.aac"
 
 			if exist "%%~nf_x264.mp4" del "%%~nf_x264.mp4" 
-			"%InstallPath%\mp4box" -add "%%~nf.h264" -add "%%~nf.aac" -hint -brand mp42 "%%~nf_x264.mp4"
+			"%InstallPath%\mp4box" -inter 0.5 -add "%%~nf.h264" -add "%%~nf.aac" -hint -brand mp42 "%%~nf_x264.mp4"
 			del "%%~nf.h264" 
 			del "%%~nf.aac" 
 			del "%%~sf.ffindex" 
-			del "%%~nf.avs" 
+			del "%%~nf.avs"
 		) else (
 			"%InstallPath%\ffmpeg.exe" -i %%f -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level !level! -maxrate !maxrate! -bufsize !bufsize! "%%~nf.h264" -c:a %aacEnc% -ab %audioBit% "%%~nf.aac"
 
