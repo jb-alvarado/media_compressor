@@ -31,7 +31,7 @@
 :: 2013-05-24 - fixing small things, also a error in the input by frame sequences
 :: 2013-08-06 - simplify downloads
 :: 2013-09-08 - simplify installation, add new static mp4box, add now wget and change first download from browser to jscript download
-:: 2013-11-*  - add timer function
+:: 2013-11-*   - add timer function
 :: 2013-11-28 - fixing bug in path how have a german umlaut
 :: 2013-12-03 - simplify installation, no avisynth install anymore, also add some warning because of the write access to the install dir
 ::
@@ -84,6 +84,17 @@ if exist "%InstallPath%" GOTO checkwget
 MD "%InstallPath%"	
 MD "%AVSPluginFolder%"
 
+if not exist "%InstallPath%" (
+	echo -------------------------------------------------------------
+	echo.
+	echo you have no write access to:
+	echo "%InstallPath%"
+	echo please create the folder "BatchMediaCompressor" manual
+	echo.
+	echo -------------------------------------------------------------
+	pause
+	)
+	
 :checkwget
 if exist "%InstallPath%\wget.exe" GOTO check7z
 	echo -------------------------------------------------------------
@@ -117,7 +128,7 @@ if exist "%InstallPath%\wget.exe" GOTO check7z
 if not exist "%InstallPath%\wget.exe" (
 	echo -------------------------------------------------------------
 	echo.
-	echo install-wget.js and wget not installed...
+	echo wget not installed...
 	echo check internet connection and write access to:
 	echo "%InstallPath%"
 	echo.
