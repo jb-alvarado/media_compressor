@@ -32,7 +32,9 @@ Current release is **v1.0**
 Installation 
 --------
 
-For installing double click it and it will download some tools. After that follow the instructions. 
+For installing double click it and it will download some tools. After that follow the instructions.
+You need write access to C:\Program Files (x86)\BatchMediaCompressor. 
+When you don't have it, create this folder manual.
 
 Using
 --------
