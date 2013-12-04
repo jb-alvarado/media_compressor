@@ -40,7 +40,7 @@
 
 @echo off
  
-color 87
+color 80
 title media_Compressor
  
 :: EncoderSettings -------------------------------
@@ -57,7 +57,7 @@ set GOPSize=25
 set fps=
 :: ( fps: frames per second, only need this for other frame rate then 25 (for  frame sequences) )
 
-set aacEnc=aac -strict experimental
+set aacEnc=libfdk_aac
 :: ( use "aac -strict experimental" when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
  
 set audioBit=160k
@@ -303,10 +303,8 @@ if exist "%InstallPath%\Uninstall.bat" GOTO runscript
 	echo.@echo off >> "%InstallPath%\Uninstall.bat"
 	echo.echo ------------------------------------------------------------- >> "%InstallPath%\Uninstall.bat"
 	echo.echo. >> "%InstallPath%\Uninstall.bat"
-	echo.echo - Avisynth will not be Uninstall >> "%InstallPath%\Uninstall.bat"
-	echo.echo - pleas Uninstall it over your Systemsettings >> "%InstallPath%\Uninstall.bat"
-	echo.echo. >> "%InstallPath%\Uninstall.bat"
 	echo.echo - hit key to process the Uninstaller >> "%InstallPath%\Uninstall.bat"
+	echo.echo. >> "%InstallPath%\Uninstall.bat"
 	echo.echo ------------------------------------------------------------- >> "%InstallPath%\Uninstall.bat"
 	echo pause >> "%InstallPath%\Uninstall.bat"
 
