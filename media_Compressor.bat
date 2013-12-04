@@ -57,7 +57,7 @@ set GOPSize=25
 set fps=
 :: ( fps: frames per second, only need this for other frame rate then 25 (for  frame sequences) )
 
-set aacEnc=libfdk_aac
+set aacEnc=aac -strict experimental
 :: ( use "aac -strict experimental" when you have the free distributed Version from ffmpeg, or libfaac/libfdk_aac when you compile by your self )
  
 set audioBit=160k
