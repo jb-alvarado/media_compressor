@@ -106,13 +106,13 @@ if exist "%InstallPath%\wget.exe" GOTO check7z
 	pushd %InstallPath%
 	if exist "%InstallPath%\install-wget.js" del "%InstallPath%\install-wget.js"
 	
-	echo.var wshell = new ActiveXObject("WScript.Shell"); var htmldoc = new ActiveXObject("htmlfile"); var xmlhttp = new ActiveXObject("MSXML2.ServerXMLHTTP"); var adodb = new ActiveXObject("ADODB.Stream"); var FSO = new ActiveXObject("Scripting.FileSystemObject")>>"%InstallPath%\install-wget.js"
+	echo.var wshell = new ActiveXObject("WScript.Shell"); var xmlhttp = new ActiveXObject("MSXML2.ServerXMLHTTP"); var adodb = new ActiveXObject("ADODB.Stream"); var FSO = new ActiveXObject("Scripting.FileSystemObject")>>"%InstallPath%\install-wget.js"
 	echo.>>"%InstallPath%\install-wget.js"
 	echo.function http_get(url, is_binary) {xmlhttp.open("GET", url); xmlhttp.send(); WScript.echo("retrieving " + url); while (xmlhttp.readyState != 4); WScript.Sleep(100); if (xmlhttp.status != 200) {WScript.Echo("http get failed: " + xmlhttp.status); WScript.Quit(2)}; return is_binary ? xmlhttp.responseBody : xmlhttp.responseText}>>"%InstallPath%\install-wget.js"
 	echo.>>"%InstallPath%\install-wget.js"
 	echo.function save_binary(path, data) {adodb.type = 1; adodb.open(); adodb.write(data); adodb.saveToFile(path, 2)}>>"%InstallPath%\install-wget.js"
 	echo.>>"%InstallPath%\install-wget.js"
-	echo.function download_wget() {var base_url = "http://blog.pixelcrusher.de/downloads/media_compressor/wget.zip"; html = http_get(base_url, false); htmldoc.open(); htmldoc.write(html); var div = htmldoc.getElementById("downloading"); var filename = "wget.zip"; var installer_data = http_get(base_url, true); save_binary(filename, installer_data); return FSO.GetAbsolutePathName(filename)}>>"%InstallPath%\install-wget.js"
+	echo.function download_wget() {var base_url = "http://blog.pixelcrusher.de/downloads/media_compressor/wget.zip"; var filename = "wget.zip"; var installer_data = http_get(base_url, true); save_binary(filename, installer_data); return FSO.GetAbsolutePathName(filename)}>>"%InstallPath%\install-wget.js"
 	echo.>>"%InstallPath%\install-wget.js"
 	echo.function extract_zip(zip_file, dstdir) {var shell = new ActiveXObject("shell.application"); var dst = shell.NameSpace(dstdir); var zipdir = shell.NameSpace(zip_file); dst.CopyHere(zipdir.items(), 0)}>>"%InstallPath%\install-wget.js"
 	echo.>>"%InstallPath%\install-wget.js"
