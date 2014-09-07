@@ -797,7 +797,7 @@ pushd %input%
 	"%InstallPath%\ffmpeg.exe" -start_number %startframe% -i "%NewFileName%" -r %fps% -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "..\%newname%.h264"
 
 	if exist "..\%newname%_x264.mp4" del "..\%newname%_x264.mp4"
-	"%InstallPath%\mp4box" -add "..\%newname%.h264" -hint -brand mp42 "..\%newname%_x264.mp4"
+	"%InstallPath%\mp4box" -add "..\%newname%.h264" -fps %fps% -hint -brand mp42 "..\%newname%_x264.mp4"
 	del "..\%newname%.h264"
 	popd
 
@@ -895,7 +895,7 @@ pushd %input%
 	"%InstallPath%\ffmpeg.exe" -i "%~n1_tmp.avs" -pix_fmt yuv420p -c:v libx264 -preset %preset% -crf %quality% -g %GOPSize% -profile:v Main -level %level% -maxrate %maxrate% -bufsize %bufsize% "..\%newname%.h264"
 
 	if exist "..\%newname%_x264.mp4" del "..\%newname%_x264.mp4"
-	"%InstallPath%\mp4box" -add "..\%newname%.h264" -hint -brand mp42 "..\%newname%_x264.mp4"
+	"%InstallPath%\mp4box" -add "..\%newname%.h264" -fps %fps% -hint -brand mp42 "..\%newname%_x264.mp4"
 	del "..\%newname%.h264"
 	del "%~n1_tmp.avs"
 	popd 
